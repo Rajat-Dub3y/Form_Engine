@@ -63,12 +63,6 @@ Publish to Chromatic (requires CHROMATIC_PROJECT_TOKEN env var or configured tok
 npm run chromatic
 ```
 
-Type-check (no emit):
-
-```bash
-npx tsc --noEmit
-```
-
 
 ```
 
