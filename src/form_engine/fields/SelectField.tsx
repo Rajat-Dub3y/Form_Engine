@@ -51,7 +51,7 @@ export function SelectField({
   }, [loadOptions]);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div>
       <label htmlFor={id}>{label}</label>
 
       <select
@@ -59,7 +59,9 @@ export function SelectField({
         value={value ?? ""}
         onChange={e => onChange(e.target.value)}
         disabled={loading}
-        className="border rounded px-2 py-1"
+        aria-busy={loading}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : undefined}
       >
         <option value="" disabled>
           {loading ? "Loading..." : "Select an option"}
@@ -73,15 +75,11 @@ export function SelectField({
       </select>
 
       {loadError && (
-        <p role="alert" className="text-sm text-red-600">
-          {loadError}
-        </p>
+        <p role="alert">{loadError}</p>
       )}
 
       {error && (
-        <p role="alert" className="text-sm text-red-600">
-          {error}
-        </p>
+        <p id={`${id}-error`} role="alert">{error}</p>
       )}
     </div>
   );

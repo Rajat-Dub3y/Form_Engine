@@ -15,22 +15,21 @@ export function CheckboxField({
   onChange
 }: Props) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="inline-flex items-center gap-2">
+    <div>
+      <label>
         <input
           id={id}
           type="checkbox"
           checked={value}
           onChange={e => onChange(e.target.checked)}
-          className="h-4 w-4"
+          aria-checked={value}
+          aria-invalid={!!error}
         />
         <span>{label}</span>
       </label>
 
       {error && (
-        <p role="alert" className="text-sm text-red-600">
-          {error}
-        </p>
+        <p id={`${id}-error`} role="alert">{error}</p>
       )}
     </div>
   );

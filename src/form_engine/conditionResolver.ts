@@ -1,12 +1,13 @@
-import type{ FieldSchema } from "./types";
+import type { FieldSchemaAll } from "./types";
+import { getIn } from "./utils.ts";
 
 export function isFieldVisible(
-  field: FieldSchema,
+  field: FieldSchemaAll,
   values: Record<string, unknown>
 ): boolean {
   if (!field.visibleIf) return true;
 
-  const targetValue = values[field.visibleIf.fieldId];
+  const targetValue = getIn(values, field.visibleIf.fieldId);
   const conditionValue = field.visibleIf.value;
 
   switch (field.visibleIf.operator) {
