@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { SelectOption } from "../types";
 
 type Props = {
@@ -8,7 +8,6 @@ type Props = {
   error?: string;
   loadOptions: () => Promise<SelectOption[]>;
   onChange: (value: string) => void;
-  onBlur?: () => void;
 };
 
 export function SelectField({
@@ -23,20 +22,28 @@ export function SelectField({
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  const hasLoadedRef = useRef(false);
+
   useEffect(() => {
+    if (hasLoadedRef.current) return;
+
     let active = true;
 
-    setLoading(true);
-    loadOptions()
-      .then(data => {
+    async function fetchOptions() {
+      setLoading(true);
+
+      try {
+        const data = await loadOptions();
         if (active) setOptions(data);
-      })
-      .catch(() => {
+      } catch {
         if (active) setLoadError("Failed to load options");
-      })
-      .finally(() => {
+      } finally {
         if (active) setLoading(false);
-      });
+      }
+    }
+
+    fetchOptions();
+    hasLoadedRef.current = true;
 
     return () => {
       active = false;

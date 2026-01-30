@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import type { FormSchema, FieldSchema } from "./types.ts";
+import { useEffect, useRef } from "react";
+import type { FormSchema, FieldSchema } from "./types";
 import { useFormState } from "../hooks/useFormState";
 import { validateField } from "./validator";
 import { isFieldVisible } from "./conditionResolver";
@@ -21,28 +21,20 @@ export function FormBuilder({ schema }: Props) {
     setAllValues
   } = useFormState();
 
-  // 1. Hydration Guard: Prevents autosave from overwriting data before restoration is finished
-  const [isHydrated, setIsHydrated] = useState(false);
-  
-  // 2. Ref to track the current schema ID to handle schema changes correctly
-  const lastSchemaId = useRef(schema.id);
+  const restoredRef = useRef(false);
 
-  /* -------------------- Restore -------------------- */
   useEffect(() => {
-    // Reset hydration if the schema ID changes
-    if (lastSchemaId.current !== schema.id) {
-      setIsHydrated(false);
-      lastSchemaId.current = schema.id;
-    }
+    if (restoredRef.current) return;
 
     const raw = localStorage.getItem(schema.id);
+
     if (raw) {
       try {
         const parsed = JSON.parse(raw) as {
           values: Record<string, unknown>;
           savedAt: number;
         };
-        // Only update if there's actually data to prevent unnecessary cycles
+
         if (parsed.values) {
           setAllValues(parsed.values);
         }
@@ -50,13 +42,13 @@ export function FormBuilder({ schema }: Props) {
         console.error("Failed to parse local storage", e);
       }
     }
-    setIsHydrated(true);
+
+    restoredRef.current = true;
   }, [schema.id, setAllValues]);
 
   /* -------------------- Autosave -------------------- */
   useEffect(() => {
-    // Only save if we've successfully checked/restored local data
-    if (!isHydrated) return;
+    if (!restoredRef.current) return;
 
     const timeoutId = setTimeout(() => {
       const payload = {
@@ -64,10 +56,10 @@ export function FormBuilder({ schema }: Props) {
         savedAt: Date.now()
       };
       localStorage.setItem(schema.id, JSON.stringify(payload));
-    }, 300); // Debounce saves by 300ms to improve Storybook performance
+    }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [values, schema.id, isHydrated]);
+  }, [values, schema.id]);
 
   /* -------------------- Validation -------------------- */
   function handleBlur(field: FieldSchema) {
@@ -79,11 +71,11 @@ export function FormBuilder({ schema }: Props) {
   }
 
   /* -------------------- Render -------------------- */
-  // Don't render inputs until we know which values to show
-  if (!isHydrated) return <div className="p-4">Loading form data...</div>;
-
   return (
-    <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+    <form
+      className="flex flex-col gap-4"
+      onSubmit={(e) => e.preventDefault()}
+    >
       {schema.fields.map(field => {
         if (!isFieldVisible(field, values)) {
           return null;
@@ -91,9 +83,10 @@ export function FormBuilder({ schema }: Props) {
 
         /* -------- TEXT -------- */
         if (field.type === "text") {
-          const value = typeof values[field.id] === "string" 
-            ? (values[field.id] as string) 
-            : "";
+          const value =
+            typeof values[field.id] === "string"
+              ? (values[field.id] as string)
+              : "";
 
           return (
             <TextField
@@ -110,9 +103,10 @@ export function FormBuilder({ schema }: Props) {
 
         /* -------- CHECKBOX -------- */
         if (field.type === "checkbox") {
-          const value = typeof values[field.id] === "boolean" 
-            ? (values[field.id] as boolean) 
-            : false;
+          const value =
+            typeof values[field.id] === "boolean"
+              ? (values[field.id] as boolean)
+              : false;
 
           return (
             <CheckboxField
@@ -126,11 +120,12 @@ export function FormBuilder({ schema }: Props) {
           );
         }
 
-        /* -------- SELECT (ASYNC) -------- */
+        /* -------- SELECT -------- */
         if (field.type === "select") {
-          const value = typeof values[field.id] === "string" 
-            ? (values[field.id] as string) 
-            : "";
+          const value =
+            typeof values[field.id] === "string"
+              ? (values[field.id] as string)
+              : "";
 
           return (
             <SelectField
