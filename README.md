@@ -69,21 +69,8 @@ Type-check (no emit):
 npx tsc --noEmit
 ```
 
-**Notes & next steps (recommended)**
 
-1. Add Tailwind CSS and design-token setup (blocking for GLOBAL CONSTRAINTS):
-
-	- Install: `npm install -D tailwindcss postcss autoprefixer`
-	- Init config: `npx tailwindcss init -p`
-	- Add Tailwind directives to your main CSS and convert component styles to utility classes + CSS variables for design tokens.
-
-2. Add Prettier and format rules: `npm install -D prettier` and create `.prettierrc`.
-
-3. Install proper TypeScript ESLint packages:
-
-	```bash
-	npm install -D @typescript-eslint/parser @typescript-eslint/eslint-plugin
-	```
+```
 
 4. Add automated a11y checks (axe) to tests and add `high-contrast` and `loading` stories in Storybook.
 
