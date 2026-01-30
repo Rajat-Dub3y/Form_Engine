@@ -17,19 +17,6 @@ A schema-driven React + TypeScript form engine with nested schemas, repeaters, c
 - Accessibility improvements: ARIA attributes, keyboard-first scenarios, and keyboard tests
 - Unit tests covering keyboard navigation, async validation, and hidden-field validation
 
-**Compliance status (GLOBAL CONSTRAINTS)**
-
-- **React 18+**: ✅ repo uses React 19
-- **TypeScript strict mode**: ✅ `strict`, `noImplicitAny`, `strictNullChecks`, `noUncheckedIndexedAccess` enabled ([tsconfig.app.json](tsconfig.app.json#L1-L40))
-- **Vite**: ✅ configured and used in npm scripts
-- **Tailwind CSS (MANDATORY)**: ❌ Not installed/configured. This is a blocking item for full compliance.
-- **Storybook**: ✅ configured (`.storybook`) and stories present (`src/stories`)
-- **Chromatic**: ⚠ Script exists in `package.json` but public Storybook publish needs verification and a valid Chromatic token to succeed
-- **ESLint + TypeScript ESLint**: ⚠ `eslint` present; recommend adding `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin` for full TS linting
-- **Prettier**: ❌ `prettier` not in devDependencies (format script exists but Prettier is missing)
-- **Testing Library**: ✅ present and tests run locally
-- **@storybook/addon-a11y / axe**: ✅ `@storybook/addon-a11y` present; automated axe checks are not yet added to the Vitest suite
-
 **Quick local setup**
 
 Prerequisites: Node 18+ (or your chosen supported Node for Vite)
