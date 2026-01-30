@@ -72,9 +72,6 @@ npx tsc --noEmit
 
 ```
 
-4. Add automated a11y checks (axe) to tests and add `high-contrast` and `loading` stories in Storybook.
-
-5. Verify Chromatic publish (ensure project token and public Storybook access).
 
 **Where to look**
 
