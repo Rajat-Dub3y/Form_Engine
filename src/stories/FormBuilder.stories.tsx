@@ -3,9 +3,7 @@ import { FormBuilder } from "../form_engine/FormBuilder";
 import { demoSchema } from "./demoSchema";
 import type { FormSchema } from "../form_engine/types";
 
-/**
- * Storybook Meta Configuration
- */
+
 const meta: Meta<typeof FormBuilder> = {
   title: "Form Engine/FormBuilder",
   component: FormBuilder,
@@ -30,18 +28,12 @@ const meta: Meta<typeof FormBuilder> = {
 export default meta;
 type Story = StoryObj<typeof FormBuilder>;
 
-/**
- * 1️⃣ Default Rendering
- */
 export const Default: Story = {
   args: {
     schema: demoSchema,
   },
 };
 
-/**
- * 2️⃣ Validation Errors Simulation
- */
 export const ValidationErrors: Story = {
   args: {
     schema: demoSchema,
@@ -56,9 +48,6 @@ export const ValidationErrors: Story = {
   },
 };
 
-/**
- * Async Validation Demo
- */
 export const AsyncValidation: Story = {
   args: {
     schema: demoSchema,
@@ -78,9 +67,7 @@ export const AsyncValidation: Story = {
   },
 };
 
-/**
- * Conditional Fields Scenario
- */
+
 const conditionalSchema: FormSchema = {
   ...demoSchema,
   id: "conditional-hidden-test",
@@ -92,9 +79,6 @@ export const ConditionalFieldHidden: Story = {
   },
 };
 
-/**
- * Keyboard Accessibility Test
- */
 export const KeyboardOnly: Story = {
   args: {
     schema: demoSchema,
@@ -105,9 +89,6 @@ export const KeyboardOnly: Story = {
   },
 };
 
-/**
- * Edge Cases
- */
 const edgeCaseSchema: FormSchema = {
   id: "edge-cases",
   fields: [
@@ -145,9 +126,6 @@ export const EdgeCases: Story = {
   },
 };
 
-/**
- * Failure States
- */
 const failureSchema: FormSchema = {
   id: "failure-states",
   fields: [
@@ -184,9 +162,6 @@ export const FailureStates: Story = {
   },
 };
 
-/**
- * Loading State
- */
 const loadingSchema: FormSchema = {
   id: "loading-state",
   fields: [
@@ -209,9 +184,6 @@ export const LoadingState: Story = {
   },
 };
 
-/**
- * High Contrast Mode
- */
 export const HighContrast: Story = {
   args: { schema: demoSchema },
   play: async ({ canvasElement }) => {

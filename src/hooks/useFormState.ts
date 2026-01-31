@@ -7,7 +7,6 @@ export function useFormState() {
 
   const setValue = useCallback((fieldPath: string, value: unknown) => {
     setValues(prev => {
-      // shallow clone prev
       const next = JSON.parse(JSON.stringify(prev || {}));
       setIn(next, fieldPath, value);
       return next;

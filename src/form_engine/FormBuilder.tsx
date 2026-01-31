@@ -54,37 +54,31 @@ export function FormBuilder({ schema }: Props) {
     restoredRef.current = true;
   }, [schema.id, setAllValues]);
 
-  /* -------------------- Storage conflict handling -------------------- */
   useEffect(() => {
     function onStorage(e: StorageEvent) {
       if (e.key !== schema.id) return;
       if (!e.newValue) return;
 
-      try {
-        const parsed = JSON.parse(e.newValue) as {
-          values: Record<string, unknown>;
-          savedAt: number;
-        };
+      
+      const parsed = JSON.parse(e.newValue) as {
+        values: Record<string, unknown>;
+        savedAt: number;
+      };
 
-        if ((parsed.savedAt ?? 0) > lastSavedAtRef.current) {
-          // remote is newer
-          const same = JSON.stringify(parsed.values) === JSON.stringify(values);
-          if (!same) {
-            setConflict({ remoteValues: parsed.values, remoteSavedAt: parsed.savedAt ?? Date.now() });
-          } else {
-            lastSavedAtRef.current = parsed.savedAt ?? lastSavedAtRef.current;
-          }
+      if ((parsed.savedAt ?? 0) > lastSavedAtRef.current) {
+        const same = JSON.stringify(parsed.values) === JSON.stringify(values);
+        if (!same) {
+          setConflict({ remoteValues: parsed.values, remoteSavedAt: parsed.savedAt ?? Date.now() });
+        } else {
+          lastSavedAtRef.current = parsed.savedAt ?? lastSavedAtRef.current;
         }
-      } catch {
-        // ignore parse errors
       }
+      
     }
 
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, [schema.id, values]);
-
-  /* -------------------- Autosave -------------------- */
   useEffect(() => {
     if (!restoredRef.current) return;
 
@@ -100,18 +94,14 @@ export function FormBuilder({ schema }: Props) {
     return () => clearTimeout(timeoutId);
   }, [values, schema.id]);
 
-  /* -------------------- Validation -------------------- */
-  // top-level blur removed (use handleBlurAt for all fields)
 
   function handleBlurAt(field: FieldSchemaAll, path: string) {
-    // skip validation for hidden fields
     if (!isFieldVisible(field, values)) {
       setErrors(prev => ({ ...prev, [path]: "" }));
       return;
     }
 
     const val = getIn(values, path);
-    // async validation support
     (async () => {
       setValidating(prev => ({ ...prev, [path]: true }));
       const err = await validateFieldAsync(field, val, values);
@@ -119,8 +109,6 @@ export function FormBuilder({ schema }: Props) {
       setValidating(prev => ({ ...prev, [path]: false }));
     })();
   }
-
-  /* -------------------- Render -------------------- */
   return (
     <>
       {conflict ? (
@@ -129,7 +117,6 @@ export function FormBuilder({ schema }: Props) {
           <button
             type="button"
             onClick={() => {
-              // accept remote
               setAllValues(conflict.remoteValues);
               setErrors({});
               lastSavedAtRef.current = conflict.remoteSavedAt;
@@ -141,7 +128,6 @@ export function FormBuilder({ schema }: Props) {
           <button
             type="button"
             onClick={() => {
-              // keep local: overwrite remote
               const payload = { values, savedAt: Date.now() };
               localStorage.setItem(schema.id, JSON.stringify(payload));
               lastSavedAtRef.current = payload.savedAt;
@@ -163,8 +149,6 @@ export function FormBuilder({ schema }: Props) {
     const fullId = parentPath ? `${parentPath}.${field.id}` : field.id;
 
     if (!isFieldVisible(field, values)) return null;
-
-    // primitive fields
     if (field.type === "text") {
       const value = typeof getIn(values, fullId) === "string" ? (getIn(values, fullId) as string) : "";
 
@@ -212,8 +196,6 @@ export function FormBuilder({ schema }: Props) {
         />
       );
     }
-
-    // group: render nested fields inside a fieldset
     if (field.type === "group") {
       return (
         <fieldset key={fullId}>
@@ -222,8 +204,6 @@ export function FormBuilder({ schema }: Props) {
         </fieldset>
       );
     }
-
-    // repeater: render array of items, with add/remove
     if (field.type === "repeater") {
       const arr = getIn(values, fullId);
       const items: Record<string, unknown>[] = Array.isArray(arr) ? (arr as Record<string, unknown>[]) : [];

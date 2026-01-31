@@ -14,9 +14,7 @@ describe('FormBuilder interactions', () => {
     name.focus();
     expect(name).toHaveFocus();
 
-    // tab to next control
     await userEvent.tab();
-    // there should be another control (subscribe checkbox)
     const subscribe = screen.getByLabelText('Subscribe to newsletter') as HTMLInputElement;
     expect(subscribe).toBeInTheDocument();
   });
@@ -45,9 +43,6 @@ describe('FormBuilder interactions', () => {
     render(<FormBuilder schema={schema} />);
     const secret = screen.queryByLabelText('Secret');
     expect(secret).toBeNull();
-
-    // attempt to set error by calling blur on non-existent element should not add errors
-    // We consider absence of alert as pass
     expect(screen.queryByRole('alert')).toBeNull();
   });
 });

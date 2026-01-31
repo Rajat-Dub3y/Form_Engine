@@ -13,7 +13,6 @@ export const demoSchema: FormSchema = {
   id: "storybook-demo-form",
   fields: [
     { id: "name", type: "text", label: "Full Name", validation: { required: true, minLength: 3 }, asyncValidate: async (value) => {
-      // simulate server-side uniqueness check
       await new Promise(r => setTimeout(r, 500));
       if (typeof value === 'string' && value.toLowerCase() === 'taken') return 'This name is already taken';
       return null;

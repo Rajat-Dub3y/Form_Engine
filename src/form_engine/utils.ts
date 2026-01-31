@@ -40,19 +40,14 @@ export function setIn(
     const isIndex = !Number.isNaN(num) && Number.isFinite(num);
 
     if (isIndex) {
-      // ensure current is an array
       if (!Array.isArray(cur)) {
-        // create array on parent if possible
         if (typeof cur === "object" && cur !== null) {
           (cur as Record<string, unknown>)[p] = [];
           cur = (cur as Record<string, unknown>)[p];
         } else {
-          // cannot traverse
           return obj;
         }
       }
-
-      // ensure element exists
       if ((cur as unknown[])[num] == null) {
         (cur as unknown[])[num] = {};
       }

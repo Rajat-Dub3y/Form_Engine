@@ -16,7 +16,6 @@ export type BaseField = {
   label: string;
   visibleIf?: VisibleIf;
   validation?: ValidationRule;
-  // optional async validator: returns error message or null
   asyncValidate?: (value: unknown, values?: Record<string, unknown>) => Promise<string | null>;
 };
 
@@ -40,12 +39,12 @@ export type SelectFieldSchema = BaseField & {
 
 export type GroupFieldSchema = BaseField & {
   type: "group";
-  fields: FieldSchemaAll[]; // nested fields
+  fields: FieldSchemaAll[]; 
 };
 
 export type RepeaterFieldSchema = BaseField & {
   type: "repeater";
-  fields: FieldSchemaAll[]; // item fields
+  fields: FieldSchemaAll[]; 
   minItems?: number;
   maxItems?: number;
 };
@@ -55,13 +54,11 @@ export type FieldSchema =
   | CheckboxFieldSchema
   | SelectFieldSchema;
 
-// Extend union with nested/group and repeater types
 export type FieldSchemaExtended =
   | FieldSchema
   | GroupFieldSchema
   | RepeaterFieldSchema;
 
-// For backward-compat, export FieldSchema as FieldSchemaExtended
 export type FieldSchemaAll = FieldSchemaExtended;
 
 export type FormSchema = {
